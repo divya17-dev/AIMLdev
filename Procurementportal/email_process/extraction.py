@@ -322,11 +322,24 @@ try:
                 return None  # Return None if all retries fail
             except Exception as e:
                 print(f"fetch_with_retry error: {e}")
-    
+        
+        
+        # Define global token cache outside the function
+        access_token_cache = {
+            "token": None,
+            "expires_at": 0
+        }
     # Access the Token
     
         def get_access_token():
+            global access_token_cache
+            
             try:
+                
+
+                # Check if the token is still valid (within 5 minutes of expiry buffer)
+                if access_token_cache["token"] and time.time() < access_token_cache["expires_at"] - 300:
+                    return access_token_cache["token"]
         # Azure AD OAuth token URL
                 TOKEN_URL = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token"
                 # Request payload
@@ -343,12 +356,18 @@ try:
 
                 # Get access token
                 response = requests.post(TOKEN_URL, data=payload, headers=headers)
+                response.raise_for_status()
                 response_dict = response.json()
                 access_token = response_dict.get("access_token")
+                expires_in = response_dict.get("expires_in", 3600)
 
                 if not access_token:
                     print("Failed to retrieve access token:", response_dict)
                     raise Exception("Access token retrieval failed")
+                
+                # Update cache
+                access_token_cache["token"] = access_token
+                access_token_cache["expires_at"] = time.time() + int(expires_in)
 
                 print("Access token retrieved successfully.")
 
@@ -3727,7 +3746,7 @@ try:
                         if not isinstance(item, dict):
                             continue
 
-                        required_fields = ["material_code", "quantity", "total_price"]
+                        required_fields = ["material_code", "quantity", "net_price"]
 
                         missing_values = [item.get(field) in ["N/A"] for field in required_fields]
 
