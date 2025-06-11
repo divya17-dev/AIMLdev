@@ -114,7 +114,8 @@ try:
         # proof_collection = db["Testing_Proof"]
         # missing_collection=db["TestingMissing"]
 
-        BASE_STORAGE_DIR = os.environ["STORAGE_DIR", "/home/site/storagedata"]
+        #BASE_STORAGE_DIR = os.environ["STORAGE_DIR", "/home/site/storagedata"]
+        BASE_STORAGE_DIR = os.environ.get("STORAGE_DIR", "/home/site/storagedata")
         ATTACHMENT_DIR = os.path.join(BASE_STORAGE_DIR, "attachments")
 
         # # Unique variable
@@ -465,7 +466,8 @@ try:
         def download_attachments(access_token, message_id, save_dir = None):
             from uuid import uuid4
             try:
-                BASE_STORAGE_DIR = os.environ["STORAGE_DIR", "/home/site/storagedata"]
+                #BASE_STORAGE_DIR = os.environ["STORAGE_DIR", "/home/site/storagedata"]
+                BASE_STORAGE_DIR = os.environ.get("STORAGE_DIR", "/home/site/storagedata")
                 save_dir = os.path.join(BASE_STORAGE_DIR, "attachments")
                 
                 PDF_DIR = os.path.join(save_dir, "pdf")
@@ -545,7 +547,8 @@ try:
 
         def save_email_as_eml(access_token, email_id, subject,EMAIL_ID, ATTACHMENT_DIR = None):
             try:
-                BASE_STORAGE_DIR = os.environ["STORAGE_DIR", "/home/site/storagedata"]
+                #BASE_STORAGE_DIR = os.environ["STORAGE_DIR", "/home/site/storagedata"]
+                BASE_STORAGE_DIR = os.environ.get("STORAGE_DIR", "/home/site/storagedata")
                 ATTACHMENT_DIR = os.path.join(BASE_STORAGE_DIR, "attachments")
                 
                 EML_DIR = os.path.join(ATTACHMENT_DIR, "eml")
@@ -3960,7 +3963,8 @@ try:
         def clear_attachment_folder(folder_path = None):
             """Deletes all files and subdirectories inside the given folder."""
             try:
-                BASE_STORAGE_DIR = os.environ["STORAGE_DIR", "/home/site/storagedata"]
+                #BASE_STORAGE_DIR = os.environ["STORAGE_DIR", "/home/site/storagedata"]
+                BASE_STORAGE_DIR = os.environ.get("STORAGE_DIR", "/home/site/storagedata")
                 folder_path = os.path.join(BASE_STORAGE_DIR, "attachments")
                 if os.path.exists(folder_path):
                     shutil.rmtree(folder_path)  # Remove the entire directory
