@@ -4,7 +4,6 @@
 
 name: Build and deploy Python project to Azure Function App - purchaseportal
 
-
 on:
   push:
     branches:
