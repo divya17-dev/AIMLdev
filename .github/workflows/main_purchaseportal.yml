@@ -37,7 +37,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r Procurementportal/requirements.txt
 
-      # Optional: Add step to run tests here      
+      # Optional: Add step to run tests here
+
+      
       - name: Zip artifact for deployment
         run: |
           cd Procurementportal
