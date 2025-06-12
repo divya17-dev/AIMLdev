@@ -62,7 +62,7 @@ try:
         EMAIL_ID=os.environ['email_id']
         SCOPE = os.environ['SCOPE']
         WEBHOOK=os.environ['WEBHOOK_URL']
-        
+        print("access token created")
         # Hold a email
         q = queue.Queue()
         processing_queue =deque()
@@ -81,11 +81,12 @@ try:
         db_username=os.environ.get("db_username")
         db_password=os.environ.get("db_password")
         db_host=os.environ.get("db_host")
-        db_port = int(os.environ.get("db_port",10255))
-
+        db_port = int(os.environ.get("db_port"))
+    
+        print("Data base is going to be connected")
         # Construct MongoDB connection string
         #connection_string = f"mongodb://{db_username}:{db_password}@{db_host}:{db_port}/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@podatabase@"
-        connection_string = f"mongodb://{db_username}:{db_password}@{db_host}:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@procurementportal-dev-cosmosdb@"
+        connection_string = f"mongodb://{db_username}:{db_password}@{db_host}:{db_port}/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@procurementportal-dev-cosmosdb@"
         print("Using connection string:", connection_string)  # it's working
         # Initialize MongoDB client
         client = pymongo.MongoClient(connection_string,maxPoolSize=10)
