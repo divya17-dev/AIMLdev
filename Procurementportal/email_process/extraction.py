@@ -328,11 +328,11 @@ try:
         
         
         # Define global token cache outside the function
-        access_token_cache = {
-            "token": None,
-            "expires_at": 0
-            #"expires_at": datetime.utcnow()
-        }
+        # access_token_cache = {
+        #     "token": None,
+        #     "expires_at": 0
+        #     #"expires_at": datetime.utcnow()
+        # }
     # Access the Token
     
         def get_access_token():
@@ -342,8 +342,8 @@ try:
                 
 
                 # Check if the token is still valid (within 5 minutes of expiry buffer)
-                if access_token_cache["token"] and time.time() < access_token_cache["expires_at"] - 300:
-                    return access_token_cache["token"]
+                # if access_token_cache["token"] and time.time() < access_token_cache["expires_at"] - 300:
+                #     return access_token_cache["token"]
         # Azure AD OAuth token URL
                 TOKEN_URL = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token"
                 # Request payload
@@ -378,7 +378,7 @@ try:
                 return access_token
             except Exception as e:
                 print(f"get_access_token error: {e}")
-        access_token= get_access_token
+        access_token= get_access_token()
     
      
     #Email
