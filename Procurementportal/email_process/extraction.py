@@ -330,7 +330,8 @@ try:
         # Define global token cache outside the function
         access_token_cache = {
             "token": None,
-            "expires_at": 0
+            #"expires_at": 0
+            "expires_at": datetime.utcnow()
         }
     # Access the Token
     
@@ -377,7 +378,7 @@ try:
                 return access_token
             except Exception as e:
                 print(f"get_access_token error: {e}")
-        access_token=get_access_token()
+        access_token= get_access_token
     
      
     #Email
@@ -392,7 +393,7 @@ try:
                 EMAILS_URL = f"https://graph.microsoft.com/v1.0/users/{EMAIL_ID}/mailFolders/inbox/messages?$filter=receivedDateTime ge {filter_time}&$orderby=receivedDateTime DESC&$select=subject,body,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,conversationId,hasAttachments"
 
                 headers = {
-                    'Authorization': f'Bearer {access_token}',
+                    'Authorization': f'Bearer {access_token()}',
                     'Accept': 'application/json'
                 }
 
@@ -444,7 +445,7 @@ try:
             try:
                 url = f"https://graph.microsoft.com/v1.0/users/{EMAIL_ID}/mailFolders/inbox/messages?$filter=conversationId eq '{conversation_id}'&$orderby=receivedDateTime DESC&$select=id,subject,body,from,receivedDateTime,conversationId,hasAttachments"
 
-                headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+                headers = {"Authorization": f"Bearer {access_token()}", "Content-Type": "application/json"}
                
                 reply_response = requests.get(url, headers=headers)
 
@@ -504,7 +505,7 @@ try:
                     os.makedirs(folder, exist_ok=True)
 
                 base_url = f"https://graph.microsoft.com/v1.0/users/{EMAIL_ID}/messages/{message_id}/attachments"
-                headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+                headers = {"Authorization": f"Bearer {access_token()}", "Content-Type": "application/json"}
 
                 downloaded_files = []
                 url = base_url  # start with base URL
@@ -583,7 +584,7 @@ try:
                     return None, None
 
                 url = f"https://graph.microsoft.com/v1.0/users/{EMAIL_ID}/messages/{email_id}/$value"
-                headers = {"Authorization": f"Bearer {access_token}"}
+                headers = {"Authorization": f"Bearer {access_token()}"}
 
                 response = requests.get(url, headers=headers)
                 print(f"API Response Code: {response.status_code}")
@@ -4164,7 +4165,7 @@ try:
                     "clientState": "K9823jdh"
                 }
 
-                headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+                headers = {"Authorization": f"Bearer {access_token()}", "Content-Type": "application/json"}
                 response = requests.post("https://graph.microsoft.com/v1.0/subscriptions", headers=headers, json=subscription_data)
 
                 if response.status_code == 201:
@@ -4195,7 +4196,7 @@ try:
                     if subscription_id:
                         expiration_datetime = (datetime.datetime.utcnow() + datetime.timedelta(hours=24)).isoformat() + "Z"
                         renewal_data = {"expirationDateTime": expiration_datetime}
-                        headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+                        headers = {"Authorization": f"Bearer {access_token()}", "Content-Type": "application/json"}
                         response = requests.patch(f"https://graph.microsoft.com/v1.0/subscriptions/{subscription_id}", headers=headers, json=renewal_data)
 
                         if response.status_code == 200:
