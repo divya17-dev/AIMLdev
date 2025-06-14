@@ -4238,7 +4238,8 @@ try:
                 threading.Thread(target=worker, daemon=True).start()
                 threading.Thread(target=process_attachments, daemon=True).start()
 
-                schedule.every(5).seconds.do(lambda: get_recent_emails(get_access_token()))
+                #schedule.every(5).seconds.do(lambda: get_recent_emails(get_access_token()))
+                schedule.every(5).seconds.do(lambda: get_recent_emails(access_token()))
                 schedule.every(24).hours.do(renew_subscription)
                 schedule.every(30).seconds.do(clear_seen_emails)
 
