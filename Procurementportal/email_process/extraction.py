@@ -378,8 +378,7 @@ try:
                 return access_token
             except Exception as e:
                 print(f"get_access_token error: {e}")
-        #access_token= get_access_token
-        access_token = lambda: get_access_token()
+        access_token= get_access_token
     
      
     #Email
@@ -394,7 +393,7 @@ try:
                 EMAILS_URL = f"https://graph.microsoft.com/v1.0/users/{EMAIL_ID}/mailFolders/inbox/messages?$filter=receivedDateTime ge {filter_time}&$orderby=receivedDateTime DESC&$select=subject,body,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,conversationId,hasAttachments"
 
                 headers = {
-                    'Authorization': f'Bearer {access_token()}',
+                    'Authorization': f'Bearer {access_token}',
                     'Accept': 'application/json'
                 }
 
@@ -446,7 +445,7 @@ try:
             try:
                 url = f"https://graph.microsoft.com/v1.0/users/{EMAIL_ID}/mailFolders/inbox/messages?$filter=conversationId eq '{conversation_id}'&$orderby=receivedDateTime DESC&$select=id,subject,body,from,receivedDateTime,conversationId,hasAttachments"
 
-                headers = {"Authorization": f"Bearer {access_token()}", "Content-Type": "application/json"}
+                headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
                
                 reply_response = requests.get(url, headers=headers)
 
@@ -506,7 +505,7 @@ try:
                     os.makedirs(folder, exist_ok=True)
 
                 base_url = f"https://graph.microsoft.com/v1.0/users/{EMAIL_ID}/messages/{message_id}/attachments"
-                headers = {"Authorization": f"Bearer {access_token()}", "Content-Type": "application/json"}
+                headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
                 downloaded_files = []
                 url = base_url  # start with base URL
@@ -585,7 +584,7 @@ try:
                     return None, None
 
                 url = f"https://graph.microsoft.com/v1.0/users/{EMAIL_ID}/messages/{email_id}/$value"
-                headers = {"Authorization": f"Bearer {access_token()}"}
+                headers = {"Authorization": f"Bearer {access_token}"}
 
                 response = requests.get(url, headers=headers)
                 print(f"API Response Code: {response.status_code}")
@@ -4184,7 +4183,7 @@ try:
         def renew_subscription():
             """Automatically renew subscription every 24 hours."""
             try:
-                access_token = get_access_token()
+                token = get_access_token
                 if not access_token:
                     print("Could not renew subscription due to missing token.")
                     return
@@ -4197,7 +4196,7 @@ try:
                     if subscription_id:
                         expiration_datetime = (datetime.datetime.utcnow() + datetime.timedelta(hours=24)).isoformat() + "Z"
                         renewal_data = {"expirationDateTime": expiration_datetime}
-                        headers = {"Authorization": f"Bearer {access_token()}", "Content-Type": "application/json"}
+                        headers = {"Authorization": f"Bearer {token()}", "Content-Type": "application/json"}
                         response = requests.patch(f"https://graph.microsoft.com/v1.0/subscriptions/{subscription_id}", headers=headers, json=renewal_data)
 
                         if response.status_code == 200:
@@ -4206,11 +4205,11 @@ try:
                             print("Subscription renewed successfully.")
                         else:
                             print("Failed to renew subscription, creating a new one.")
-                            create_subscription(access_token)
+                            create_subscription(token)
                     else:
-                        create_subscription(access_token)
+                        create_subscription(token)
                 else:
-                    create_subscription(access_token)
+                    create_subscription(token)
             except Exception as e:
                 print(f"Error renewing subscription: {e}")
         
@@ -4235,7 +4234,8 @@ try:
                 print("Email monitoring background threads launched.")
 
                 # Start threads (daemon)
-                threading.Thread(target=get_recent_emails, args=(access_token(),), daemon=True).start()
+                #threading.Thread(target=get_recent_emails, args=(access_token,), daemon=True).start()
+                threading.Thread(target=get_recent_emails, args=(get_access_token(),), daemon=True).start()
                 threading.Thread(target=worker, daemon=True).start()
                 threading.Thread(target=process_attachments, daemon=True).start()
 
