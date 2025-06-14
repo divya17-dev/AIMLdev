@@ -330,8 +330,8 @@ try:
         # Define global token cache outside the function
         access_token_cache = {
             "token": None,
-            #"expires_at": 0
-            "expires_at": datetime.utcnow()
+            "expires_at": 0
+            #"expires_at": datetime.utcnow()
         }
     # Access the Token
     
@@ -4234,7 +4234,7 @@ try:
                 print("Email monitoring background threads launched.")
 
                 # Start threads (daemon)
-                threading.Thread(target=get_recent_emails, args=(access_token,), daemon=True).start()
+                threading.Thread(target=get_recent_emails, args=(access_token(),), daemon=True).start()
                 threading.Thread(target=worker, daemon=True).start()
                 threading.Thread(target=process_attachments, daemon=True).start()
 
