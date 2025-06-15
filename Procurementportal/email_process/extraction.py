@@ -342,10 +342,10 @@ try:
                 
 
                 # Check if the token is still valid (within 5 minutes of expiry buffer)
-                # if access_token_cache["token"] and time.time() < access_token_cache["expires_at"] - 300:
-                #     return access_token_cache["token"]
-                if access_token_cache.get("token") and access_token_cache["expires_at"] > time.time():
+                if access_token_cache["token"] and time.time() < access_token_cache["expires_at"] - 300:
                     return access_token_cache["token"]
+                # if access_token_cache.get("token") and access_token_cache["expires_at"] > time.time():
+                #     return access_token_cache["token"]
         # Azure AD OAuth token URL
                 TOKEN_URL = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token"
                 # Request payload
@@ -380,7 +380,7 @@ try:
                 return access_token
             except Exception as e:
                 print(f"get_access_token error: {e}")
-                raise  # re-raise for debugging if needed
+                #raise  # re-raise for debugging if needed
         access_token= get_access_token()
     
      
