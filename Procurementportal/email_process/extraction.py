@@ -393,8 +393,7 @@ try:
                 # Microsoft Graph API URL to fetch emails
                 filter_time = (datetime.datetime.utcnow() - datetime.timedelta(seconds=30)).isoformat() + "Z"
 
-                #EMAILS_URL = f"https://graph.microsoft.com/v1.0/users/{EMAIL_ID}/mailFolders/inbox/messages?$filter=receivedDateTime ge {filter_time}&$orderby=receivedDateTime DESC&$select=subject,body,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,conversationId,hasAttachments"
-                EMAILS_URL = f"https://graph.microsoft.com/v1.0/users/{EMAIL_ID}/mailFolders/inbox/messages?$filter=receivedDateTime ge {filter_time}&$select=subject,body,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,conversationId,hasAttachments"
+                EMAILS_URL = f"https://graph.microsoft.com/v1.0/users/{EMAIL_ID}/mailFolders/inbox/messages?$filter=receivedDateTime ge {filter_time}&$orderby=receivedDateTime DESC&$select=subject,body,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,conversationId,hasAttachments"
 
                 headers = {
                     'Authorization': f'Bearer {access_token}',
@@ -406,17 +405,16 @@ try:
                 email_response = requests.get(EMAILS_URL, headers=headers)
 
                 if email_response.status_code == 200:
-                    emails = email_response.json().get("value", [])
+                    emails = email_response.json()
                     # new_emails = [email for email in emails.get("value", []) if email["id"] not in seen_emails]
                     # new_emails = emails.get("value", [])
-                    #new_emails = sorted(emails.get("value", []), key=lambda e: e["receivedDateTime"])
-                    new_emails = sorted(emails, key=lambda e: e["receivedDateTime"], reverse=True)
+                    new_emails = sorted(emails.get("value", []), key=lambda e: e["receivedDateTime"])
                     if new_emails:
                         for email in new_emails:
                             # q.put(email)
 
-                            email_id = email.get("id")
-                            conversation_id = email.get("conversationId")
+                            email_id = email["id"]
+                            conversation_id = email["conversationId"]
 
                             subject = email.get("subject")
                             if subject and subject.lower().startswith(("read:", "accepted:", "declined:", "canceled:")):
@@ -426,12 +424,13 @@ try:
                                 print("Email has no subject, skipping.")
                                 continue
 
-                            print(f"Processing email: {subject} at {email.get('receivedDateTime')}")
+
                             q.put(email)
                             reply_email = get_replies(access_token, conversation_id,EMAIL_ID)
                             print(reply_email)
 
-                        fetch_with_retry(EMAILS_URL, headers, retries=3, backoff_factor=2)
+
+                            fetch_with_retry(EMAILS_URL, headers, retries=3, backoff_factor=2)
 
                     else:
                         print("No new emails received in the last 30 seconds.")
